@@ -24,14 +24,21 @@ dependencies {
     implementation(libs.ktor.server.resources)
     implementation(libs.ktor.server.host.common)
     implementation(libs.ktor.server.status.pages)
-    implementation(libs.koin.ktor)
-    implementation(libs.koin.logger.slf4j)
     implementation(libs.ktor.server.request.validation)
     implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.server.netty)
-    implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
+
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    implementation(libs.koin.ktor)
+    implementation(libs.koin.logger.slf4j)
+
+    implementation(libs.logback.classic)
+
+    implementation(libs.mongodb.driver.kotlin)
+    implementation(libs.mongodb.bson.kotlin)
+
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
 }
