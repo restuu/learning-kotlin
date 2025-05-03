@@ -1,5 +1,8 @@
 package com.restuu.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class IssueReport(
     val id: String? = null,
     val questionId: String,

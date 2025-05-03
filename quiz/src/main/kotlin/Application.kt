@@ -1,6 +1,7 @@
 package com.restuu
 
 import com.restuu.presentation.config.configureRouting
+import com.restuu.presentation.config.configureSerialization
 import io.ktor.server.application.Application
 
 fun main(args: Array<String>) {
@@ -9,5 +10,6 @@ fun main(args: Array<String>) {
 
 @Suppress("unused")
 fun Application.module() {
+    configureSerialization()
     configureRouting()
 }

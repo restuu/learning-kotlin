@@ -1,7 +1,7 @@
 package com.restuu.presentation.routes.quiz_question
 
 import com.restuu.domain.model.QuizQuestion
-import io.ktor.server.response.respondText
+import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 
@@ -15,6 +15,6 @@ fun Route.getAllQuizQuestions() {
             topicCode = 1
         )
 
-        call.respondText(question.toString())
+        call.respond(question)
     }
 }
