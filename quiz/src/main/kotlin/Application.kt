@@ -1,9 +1,7 @@
 package com.restuu
 
-import com.restuu.plugins.configureFrameworks
-import com.restuu.plugins.configureRouting
-import com.restuu.plugins.configureSerialization
-import io.ktor.server.application.*
+import com.restuu.presentation.config.configureRouting
+import io.ktor.server.application.Application
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -11,7 +9,5 @@ fun main(args: Array<String>) {
 
 @Suppress("unused")
 fun Application.module() {
-    configureFrameworks()
-    configureSerialization()
     configureRouting()
 }
