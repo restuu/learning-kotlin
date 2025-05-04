@@ -1,6 +1,6 @@
 package com.restuu.presentation.config
 
-import com.restuu.domain.model.QuizQuestion
+import com.restuu.domain.data.repository.QuizQuestionRepositoryImpl
 import com.restuu.presentation.routes.quiz_question.deleteQuizQuestionById
 import com.restuu.presentation.routes.quiz_question.getAllQuizQuestions
 import com.restuu.presentation.routes.quiz_question.getQuizQuestionById
@@ -10,13 +10,13 @@ import io.ktor.server.application.Application
 import io.ktor.server.routing.routing
 
 fun Application.configureRouting() {
+    val quizQuestionRepository = QuizQuestionRepositoryImpl()
+
     routing {
         root()
-        getAllQuizQuestions()
-        upsertQuizQuestion()
-        deleteQuizQuestionById()
-        getQuizQuestionById()
+        getAllQuizQuestions(quizQuestionRepository)
+        upsertQuizQuestion(quizQuestionRepository)
+        deleteQuizQuestionById(quizQuestionRepository)
+        getQuizQuestionById(quizQuestionRepository)
     }
 }
-
-val quizQuestions = mutableListOf<QuizQuestion>()
