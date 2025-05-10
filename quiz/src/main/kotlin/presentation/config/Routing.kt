@@ -1,5 +1,6 @@
 package com.restuu.presentation.config
 
+import com.restuu.domain.data.database.DatabaseFactory
 import com.restuu.domain.data.repository.QuizQuestionRepositoryImpl
 import com.restuu.presentation.routes.quiz_question.deleteQuizQuestionById
 import com.restuu.presentation.routes.quiz_question.getAllQuizQuestions
@@ -10,7 +11,8 @@ import io.ktor.server.application.Application
 import io.ktor.server.routing.routing
 
 fun Application.configureRouting() {
-    val quizQuestionRepository = QuizQuestionRepositoryImpl()
+    val mongoDb = DatabaseFactory.create()
+    val quizQuestionRepository = QuizQuestionRepositoryImpl(mongoDb)
 
     routing {
         root()
