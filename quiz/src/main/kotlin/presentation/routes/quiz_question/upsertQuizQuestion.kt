@@ -2,6 +2,9 @@ package com.restuu.presentation.routes.quiz_question
 
 import com.restuu.domain.model.QuizQuestion
 import com.restuu.domain.repository.QuizQuestionRepository
+import com.restuu.domain.util.DataError
+import com.restuu.domain.util.onFailure
+import com.restuu.domain.util.onSuccess
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -11,10 +14,17 @@ import io.ktor.server.routing.post
 fun Route.upsertQuizQuestion(quizQuestionRepository: QuizQuestionRepository) {
     post(path = "/quiz/questions") {
         val question = call.receive<QuizQuestion>()
-        if (quizQuestionRepository.upsertQuestion(question)) {
-            call.respond(message = "Question saved", status = HttpStatusCode.Created)
-        } else {
-            call.respond(message = "Question not saved", status = HttpStatusCode.InternalServerError)
+        quizQuestionRepository
+            .upsertQuestion(question)
+            .onSuccess { call.respond(message = "Question saved", status = HttpStatusCode.Created) }
+            .onFailure { error ->
+                when (error) {
+                    DataError.NotFound ->
+                        call.respond(message = "Question not found", status = HttpStatusCode.NotFound)
+
+                    else ->
+                        call.respond(message = "Error saving question", status = HttpStatusCode.InternalServerError)
+                }
+            }
         }
     }
-}

@@ -1,6 +1,9 @@
 package com.restuu.presentation.routes.quiz_question
 
 import com.restuu.domain.repository.QuizQuestionRepository
+import com.restuu.domain.util.DataError
+import com.restuu.domain.util.onFailure
+import com.restuu.domain.util.onSuccess
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -12,8 +15,22 @@ fun Route.getAllQuizQuestions(quizQuestionRepository: QuizQuestionRepository) {
         val topicCode = call.parameters["topicCode"]?.toIntOrNull()
 
         quizQuestionRepository.getAllQuizQuestions(topicCode, limit)
-            .takeIf { it.isNotEmpty() }
-            ?.let { call.respond(it) }
-            ?: call.respond(message = "No questions found", status = HttpStatusCode.NotFound)
+            .onSuccess { questions ->
+                call.respond(questions)
+            }
+            .onFailure { error ->
+                if (error == DataError.NotFound) {
+                    return@get call.respond(
+                        message = "No questions found",
+                        status = HttpStatusCode.NotFound,
+                    )
+                }
+
+                call.respond(
+                    message = "Unknown error",
+                    status = HttpStatusCode.InternalServerError,
+                )
+            }
+
     }
 }
