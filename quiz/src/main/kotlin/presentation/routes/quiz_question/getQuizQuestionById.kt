@@ -1,9 +1,9 @@
 package com.restuu.presentation.routes.quiz_question
 
 import com.restuu.domain.repository.QuizQuestionRepository
-import com.restuu.domain.util.DataError
 import com.restuu.domain.util.onFailure
 import com.restuu.domain.util.onSuccess
+import com.restuu.presentation.util.respondWithError
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -21,16 +21,7 @@ fun Route.getQuizQuestionById(quizQuestionRepository: QuizQuestionRepository) {
         }
 
         quizQuestionRepository.getQuestionById(questionId)
-            .onSuccess { call.respond(it) }
-            .onFailure { error ->
-                when (error) {
-                    DataError.NotFound -> call.respond(message = "Question not found", status = HttpStatusCode.NotFound)
-                    else ->
-                        call.respond(
-                            message = "Error retrieving question",
-                            status = HttpStatusCode.InternalServerError
-                        )
-                }
-            }
+            .onSuccess { call::respond }
+            .onFailure { ::respondWithError }
     }
 }
