@@ -46,10 +46,8 @@ class QuizQuestionRepositoryImpl(mongoDb: MongoDatabase) : QuizQuestionRepositor
                 .map { it.toQuizQuestion() }
                 .toList()
                 .let {
-                    when (it.isEmpty()) {
-                        true -> Result.Failure(DataError.NotFound)
-                        false -> Result.Success(it)
-                    }
+                    if (it.isEmpty()) return@let Result.Failure(DataError.NotFound)
+                    Result.Success(it)
                 }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -79,7 +77,7 @@ class QuizQuestionRepositoryImpl(mongoDb: MongoDatabase) : QuizQuestionRepositor
             questionCollection
                 .deleteOne(filterQuery)
                 .let {
-                    if (it.wasAcknowledged() && it.deletedCount > 0) Result.Success(true)
+                    if (it.wasAcknowledged() && it.deletedCount > 0) return@let Result.Success(true)
                     else Result.Failure(DataError.NotFound)
                 }
         } catch (e: Exception) {
@@ -93,7 +91,7 @@ class QuizQuestionRepositoryImpl(mongoDb: MongoDatabase) : QuizQuestionRepositor
             questionCollection
                 .insertOne(question.toQuizQuestionEntity())
                 .let {
-                    if (it.insertedId != null) Result.Success(true)
+                    if (it.insertedId != null) return@let Result.Success(true)
                     Result.Failure(DataError.Database)
                 }
         } catch (e: Exception) {
@@ -117,7 +115,7 @@ class QuizQuestionRepositoryImpl(mongoDb: MongoDatabase) : QuizQuestionRepositor
             questionCollection
                 .updateOne(filter, updates)
                 .let {
-                    if (it.matchedCount > 0) Result.Success(true)
+                    if (it.matchedCount > 0) return@let Result.Success(true)
                     Result.Failure(DataError.NotFound)
                 }
         } catch (e: Exception) {
