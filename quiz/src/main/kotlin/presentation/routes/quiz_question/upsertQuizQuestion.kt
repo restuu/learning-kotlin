@@ -7,16 +7,16 @@ import com.restuu.domain.util.onSuccess
 import com.restuu.presentation.util.respondWithError
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
+import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.post
 
 fun Route.upsertQuizQuestion(quizQuestionRepository: QuizQuestionRepository) {
-    post(path = "/quiz/questions") {
+    post<QuizQuestionRoutesPath> {
         val question = call.receive<QuizQuestion>()
         quizQuestionRepository
             .upsertQuestion(question)
             .onSuccess { call.respond(message = "Question saved", status = HttpStatusCode.Created) }
-            .onFailure { ::respondWithError }
-        }
+            .onFailure { respondWithError(it) }
     }
+}

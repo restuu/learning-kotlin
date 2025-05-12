@@ -4,24 +4,16 @@ import com.restuu.domain.repository.QuizQuestionRepository
 import com.restuu.domain.util.onFailure
 import com.restuu.domain.util.onSuccess
 import com.restuu.presentation.util.respondWithError
-import io.ktor.http.HttpStatusCode
+import io.ktor.server.resources.get
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
 
 fun Route.getQuizQuestionById(quizQuestionRepository: QuizQuestionRepository) {
-    get(path = "/quiz/questions/{questionId}") {
-        val questionId = call.parameters["questionId"]?.takeIf { it.isNotBlank() }
-        if (questionId == null) {
-            call.respond(
-                message = "Question ID is missing",
-                status = HttpStatusCode.BadRequest
-            )
-            return@get
-        }
+    get<QuizQuestionRoutesPath.ById> { path ->
+        val questionId = path.questionId
 
         quizQuestionRepository.getQuestionById(questionId)
-            .onSuccess { call::respond }
-            .onFailure { ::respondWithError }
+            .onSuccess { call.respond(it) }
+            .onFailure { respondWithError(it) }
     }
 }
