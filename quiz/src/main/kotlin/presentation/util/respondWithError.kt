@@ -6,11 +6,11 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.RoutingContext
 
 suspend fun RoutingContext.respondWithError(error: DataError) {
-    when(error) {
+    when (error) {
         DataError.NotFound -> call.respond(
-                message = "No questions found",
-                status = HttpStatusCode.NotFound,
-            )
+            message = "Data not found",
+            status = HttpStatusCode.NotFound,
+        )
 //        DataError.Validation -> TODO()
 //        DataError.Database -> TODO()
 //        DataError.Unknown -> TODO()
