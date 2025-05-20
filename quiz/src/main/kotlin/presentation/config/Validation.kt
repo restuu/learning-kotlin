@@ -1,5 +1,6 @@
 package com.restuu.presentation.config
 
+import com.restuu.presentation.validator.validateIssueReport
 import com.restuu.presentation.validator.validateQuizQuestion
 import com.restuu.presentation.validator.validateQuizTopic
 import io.ktor.server.application.Application
@@ -10,5 +11,6 @@ fun Application.configureValidation() {
     install(RequestValidation) {
         validateQuizQuestion()
         validateQuizTopic()
+        validateIssueReport()
     }
 }

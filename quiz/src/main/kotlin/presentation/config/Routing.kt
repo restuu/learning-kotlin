@@ -1,8 +1,10 @@
 package com.restuu.presentation.config
 
 import com.restuu.domain.data.database.DatabaseFactory
+import com.restuu.domain.data.repository.IssueReportRepositoryImpl
 import com.restuu.domain.data.repository.QuizQuestionRepositoryImpl
 import com.restuu.domain.data.repository.QuizTopicRepositoryImpl
+import com.restuu.presentation.routes.issue_report.issueReportRoutes
 import com.restuu.presentation.routes.quiz_question.deleteQuizQuestionById
 import com.restuu.presentation.routes.quiz_question.getAllQuizQuestions
 import com.restuu.presentation.routes.quiz_question.getQuizQuestionById
@@ -21,6 +23,7 @@ fun Application.configureRouting() {
     val mongoDb = DatabaseFactory.create()
     val quizQuestionRepository = QuizQuestionRepositoryImpl(mongoDb)
     val quizTopicRepository = QuizTopicRepositoryImpl(mongoDb)
+    val issueReportRepository = IssueReportRepositoryImpl(mongoDb)
 
     routing {
         root()
@@ -30,6 +33,7 @@ fun Application.configureRouting() {
         getQuizQuestionById(quizQuestionRepository)
 
         quizTopicRoutes(quizTopicRepository)
+        issueReportRoutes(issueReportRepository)
 
         staticResources(
             remotePath = "/images",
