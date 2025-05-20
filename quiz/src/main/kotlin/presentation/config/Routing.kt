@@ -1,9 +1,8 @@
 package com.restuu.presentation.config
 
-import com.restuu.domain.data.database.DatabaseFactory
-import com.restuu.domain.data.repository.IssueReportRepositoryImpl
-import com.restuu.domain.data.repository.QuizQuestionRepositoryImpl
-import com.restuu.domain.data.repository.QuizTopicRepositoryImpl
+import com.restuu.domain.repository.IssueReportRepository
+import com.restuu.domain.repository.QuizQuestionRepository
+import com.restuu.domain.repository.QuizTopicRepository
 import com.restuu.presentation.routes.issue_report.issueReportRoutes
 import com.restuu.presentation.routes.quiz_question.deleteQuizQuestionById
 import com.restuu.presentation.routes.quiz_question.getAllQuizQuestions
@@ -16,14 +15,14 @@ import io.ktor.server.application.install
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.resources.Resources
 import io.ktor.server.routing.routing
+import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
     install(Resources)
 
-    val mongoDb = DatabaseFactory.create()
-    val quizQuestionRepository = QuizQuestionRepositoryImpl(mongoDb)
-    val quizTopicRepository = QuizTopicRepositoryImpl(mongoDb)
-    val issueReportRepository = IssueReportRepositoryImpl(mongoDb)
+    val quizQuestionRepository: QuizQuestionRepository by inject()
+    val quizTopicRepository: QuizTopicRepository by inject()
+    val issueReportRepository: IssueReportRepository by inject()
 
     routing {
         root()
