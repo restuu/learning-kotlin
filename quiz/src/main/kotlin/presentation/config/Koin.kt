@@ -15,15 +15,17 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
+val koinModule = module {
+    single { DatabaseFactory.create() }
+
+    singleOf(::QuizQuestionRepositoryImpl).bind<QuizQuestionRepository>()
+    singleOf(::QuizTopicRepositoryImpl).bind<QuizTopicRepository>()
+    singleOf(::IssueReportRepositoryImpl).bind<IssueReportRepository>()
+}
 fun Application.configureKoin() {
     install(Koin) {
         slf4jLogger()
 
-        modules(module {
-            single { DatabaseFactory.create() }
-            singleOf(::QuizQuestionRepositoryImpl).bind<QuizQuestionRepository>()
-            singleOf(::QuizTopicRepositoryImpl).bind<QuizTopicRepository>()
-            singleOf(::IssueReportRepositoryImpl).bind<IssueReportRepository>()
-        })
+        modules(koinModule)
     }
 }

@@ -86,6 +86,22 @@ class QuizQuestionRepositoryImpl(mongoDb: MongoDatabase) : QuizQuestionRepositor
         }
     }
 
+    override suspend fun bulkInsertQuestions(questions: List<QuizQuestion>): Result<Unit, DataError> {
+        return runCatching {
+            val mappedQuestions = questions
+                .map { it.toQuizQuestionEntity() }
+
+            questionCollection
+                .insertMany(mappedQuestions)
+
+            Result.Success(Unit)
+        }
+            .getOrElse { e ->
+                e.printStackTrace()
+                Result.Failure(DataError.Database)
+            }
+    }
+
     suspend fun insertOne(question: QuizQuestion): Result<Boolean, DataError> {
         return try {
             questionCollection
