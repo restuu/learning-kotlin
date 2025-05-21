@@ -20,10 +20,15 @@ class QuizQuestions(
     val topicCode: Int? = null,
     val limit: Int = 10,
 ) {
-    @Resource(path = "/{questionId}")
+    @Resource(path = "{questionId}")
     data class ById(
         val parent: QuizQuestions = QuizQuestions(),
         val questionId: String
+    )
+
+    @Resource(path = "bulk")
+    data class Bulk(
+        val parent: QuizQuestions = QuizQuestions()
     )
 }
 
@@ -33,6 +38,13 @@ fun Route.quizQuestionRoutes(quizQuestionRepository: QuizQuestionRepository) {
         quizQuestionRepository
             .upsertQuestion(question)
             .onSuccess { call.respond(message = "Question saved", status = HttpStatusCode.Created) }
+            .onFailure { respondWithError(it) }
+    }
+
+    post<QuizQuestions.Bulk> {
+        quizQuestionRepository
+            .bulkInsertQuestions(call.receive())
+            .onSuccess { call.respondText("Questions saved") }
             .onFailure { respondWithError(it) }
     }
 
