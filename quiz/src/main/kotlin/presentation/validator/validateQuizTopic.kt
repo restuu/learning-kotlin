@@ -9,10 +9,13 @@ fun RequestValidationConfig.validateQuizTopic() {
         when {
             quizTopic.name.isBlank() || quizTopic.name.length < 3 ->
                 ValidationResult.Invalid("Topic name at least 3 characters")
-            quizTopic.code <= 0 ->
-                ValidationResult.Invalid("Topic code must be > 0")
+
+            quizTopic.code < 0 ->
+                ValidationResult.Invalid("Topic code must be >= 0")
+
             quizTopic.imageUrl.isBlank() ->
                 ValidationResult.Invalid("Image URL must not be empty")
+
             else -> ValidationResult.Valid
         }
     }
