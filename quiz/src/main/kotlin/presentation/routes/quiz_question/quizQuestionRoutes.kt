@@ -5,14 +5,12 @@ import com.restuu.domain.repository.QuizQuestionRepository
 import com.restuu.domain.util.onFailure
 import com.restuu.domain.util.onSuccess
 import com.restuu.presentation.util.respondWithError
-import io.ktor.http.HttpStatusCode
-import io.ktor.resources.Resource
-import io.ktor.server.request.receive
-import io.ktor.server.resources.delete
-import io.ktor.server.resources.get
+import io.ktor.http.*
+import io.ktor.resources.*
+import io.ktor.server.request.*
+import io.ktor.server.resources.*
 import io.ktor.server.resources.post
-import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
+import io.ktor.server.response.*
 import io.ktor.server.routing.Route
 
 @Resource("/quiz/questions")
@@ -29,6 +27,13 @@ class QuizQuestions(
     @Resource(path = "bulk")
     data class Bulk(
         val parent: QuizQuestions = QuizQuestions()
+    )
+
+    @Resource(path = "random")
+    data class Random(
+        val parent: QuizQuestions = QuizQuestions(),
+        val topicCode: Int? = null,
+        val limit: Int = 10,
     )
 }
 
@@ -55,13 +60,18 @@ fun Route.quizQuestionRoutes(quizQuestionRepository: QuizQuestionRepository) {
         quizQuestionRepository.getAllQuizQuestions(topicCode, limit)
             .onSuccess { call.respond(it) }
             .onFailure { respondWithError(it) }
-
     }
 
     get<QuizQuestions.ById> { path ->
         val questionId = path.questionId
 
         quizQuestionRepository.getQuestionById(questionId)
+            .onSuccess { call.respond(it) }
+            .onFailure { respondWithError(it) }
+    }
+
+    get<QuizQuestions.Random> { path ->
+        quizQuestionRepository.getRandomQuizQuestions(path.topicCode, path.limit)
             .onSuccess { call.respond(it) }
             .onFailure { respondWithError(it) }
     }

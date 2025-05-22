@@ -1,5 +1,6 @@
 package com.restuu.domain.data.repository
 
+import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters.empty
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Updates.combine
@@ -53,6 +54,34 @@ class QuizQuestionRepositoryImpl(mongoDb: MongoDatabase) : QuizQuestionRepositor
             e.printStackTrace()
             Result.Failure(DataError.Database)
         }
+    }
+
+    override suspend fun getRandomQuizQuestions(
+        topicCode: Int?,
+        limit: Int
+    ): Result<List<QuizQuestion>, DataError> {
+        return runCatching {
+            val filterQuery = topicCode
+                ?.let { eq(QuizQuestionEntity::topicCode.name, it) }
+                ?: empty()
+
+            val matchStage = listOf(Aggregates.match(filterQuery))
+
+            val pipeline = matchStage + Aggregates.sample(limit)
+
+            questionCollection
+                .aggregate(pipeline)
+                .map { it.toQuizQuestion() }
+                .toList()
+                .let {
+                    if (it.isEmpty()) return@let Result.Failure(DataError.NotFound)
+                    Result.Success(it)
+                }
+        }
+            .getOrElse {
+                it.printStackTrace()
+                Result.Failure(DataError.Database)
+            }
     }
 
     override suspend fun getQuestionById(id: String): Result<QuizQuestion, DataError> {

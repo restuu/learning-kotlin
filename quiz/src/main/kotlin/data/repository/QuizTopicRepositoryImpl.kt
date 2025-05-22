@@ -1,6 +1,7 @@
 package com.restuu.domain.data.repository
 
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.restuu.domain.data.database.entity.QuizTopicEntity
@@ -25,8 +26,11 @@ class QuizTopicRepositoryImpl(
 
     override suspend fun getAllTopics(limit: Int): Result<List<QuizTopic>, DataError> {
         return orErrorDatabase {
+            val sortQuery = Sorts.ascending(QuizTopicEntity::code.name)
+
             topicCollection
                 .find()
+                .sort(sortQuery)
                 .limit(limit)
                 .map { it.toQuizTopic() }
                 .toList()
