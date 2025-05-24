@@ -5,12 +5,14 @@ import com.restuu.domain.repository.QuizQuestionRepository
 import com.restuu.domain.util.onFailure
 import com.restuu.domain.util.onSuccess
 import com.restuu.presentation.util.respondWithError
-import io.ktor.http.*
-import io.ktor.resources.*
-import io.ktor.server.request.*
-import io.ktor.server.resources.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.resources.Resource
+import io.ktor.server.request.receive
+import io.ktor.server.resources.delete
+import io.ktor.server.resources.get
 import io.ktor.server.resources.post
-import io.ktor.server.response.*
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 
 @Resource("/quiz/questions")
